@@ -154,7 +154,10 @@ class Mortgage():
                 numalign="right"
             )
         )
-
+    def cashflow(self):
+        return self.__cashflows()
+        
+        
 def checker(argumnt): 
     num = int(argumnt)
     if num <0: 
