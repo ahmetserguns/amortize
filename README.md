@@ -3,7 +3,7 @@
 
 <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/amortize?style=for-the-badge">
 <img alt="PyPI" src="https://img.shields.io/pypi/v/amortize?style=for-the-badge">
-
+<img alt="Travis (.com) branch" src="https://img.shields.io/travis/com/ahmetserguns/amortize/main?label=Travis%20CI&style=for-the-badge">
 
 ### __Inspiration__
 
