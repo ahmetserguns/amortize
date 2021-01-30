@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "amortize"
+version = "0.0.2"
+repository="https://github.com/ahmetserguns/amortize"
+description = "Easy-to-use Python Library for Amortization Schedule and Refinance"
+authors = ["ahmetserguns"]
+license = "MIT"
+readme = "README.md"
+keywords = [
+    "mortgage","amortization","loan","refinance"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Office/Business :: Financial :: Accounting",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+tabulate = "^0.8.7"
+numpy-financial = "^1.0.0"
+pandas = "^1.2.1"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+amortize = "amortize.amortize:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
