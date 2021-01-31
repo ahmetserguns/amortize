@@ -1,6 +1,5 @@
 # __amortize__
 ### **Easy-to-use Python Library for Amortization Schedule and Refinance**
-
 <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/amortize?style=for-the-badge">
 <img alt="PyPI" src="https://img.shields.io/pypi/v/amortize?style=for-the-badge">
 <img alt="Travis (.com) branch" src="https://img.shields.io/travis/com/ahmetserguns/amortize/main?label=Travis%20CI&style=for-the-badge">
@@ -8,7 +7,8 @@
 ### __Inspiration__
 
 The loan cost rate, contrary to the interest rate, represents the total cost of the loan.
-This is what should be used to repay loans provided by banks. However, the borrower will see this figure after the approval and signing of the contract.
+This is what should be used to repay loans provided by banks. However, the borrower will see this figure after
+the approval and signing of the contract.
 
 This Python library can, according to the credit information entered, detail the prepayment and the subsequent cost 
 of the loan on a monthly and annual, nominal and effective basis, create a payment plan and transfer to excel.
@@ -29,33 +29,17 @@ It allows the side-by-side comparison of the existing or refinanced loan.
     
     Mortgage(amount,interest,months,fees=0)
 
-    = Monthly Payment =
     >> from amortize.calc import Mortgage    
     >> m=Mortgage(300000,6,12,6000)
-    >> m.showpayment()    
-
-    = Show Summary =
-    >> from amortize.calc import Mortgage    
-    >> m=Mortgage(300000,6,12,6000)
-    >> m.showsummary()
-
-    = Show Amortization Schedule =
-    >> from amortize.clac import Mortgage    
-    >> m=Mortgage(300000,6,12,6000)
-    >> m.showschedule()
-
-    = Refinance Mortgage =
-    >> from amortize.calc import Mortgage    
-    >> m=Mortgage(300000,6,12,6000)
-    >> m.showrefinance()
-
-    = Export Amortization Schedule to Excel =
-    >> from amortize.calc import Mortgage    
-    >> m=Mortgage(300000,6,12,6000)
-    >> m.sendtoexcel()
+  
+    >> m.showpayment()          : Monthly Payment
+    >> m.showsummary()          : Summary Table
+    >> m.showschedule()         : Amortization Schedule
+    >> m.showrefinance()        : Refinance Mortgage
+    >> m.sendtoexcel()          : Send Amortization Schedule to Excel
 
 ### __CLI__
----
+
     usage: amortize [-h] -a AMOUNT -i INTEREST -m MONTHS -f FEES [-s] [-e] [-r]
 
     Python Library for Amortization Schedule and Refinance
