@@ -48,12 +48,18 @@ class Mortgage():
                 taksit_tutari=para*yenifaiz/12/100*(1+(yenifaiz/12/100))**kalanay/(((1+(yenifaiz/12/100))**kalanay)-1)
                 geri_odeme1=self.__kalanpara(odenenay)[1]*kalanay
                 geri_odeme2=taksit_tutari*kalanay
+                kazanc=(taksit_tutari - self.__kalanpara(odenenay)[1])
+                prompt= "Sorry, refinancing will not save your money!" if (geri_odeme2 - geri_odeme1+self.__masraf) >=\
+                                                                          0 \
+                                        else "Refinancing could save you"
+
 
                 print("""
                                     REFINANCE CALCULATOR
                               Should I Refinance My Mortgage?
                 ==========================================================
-
+                !! Principal Remaining: {:>10,.2f}
+                
                                                Remaining          Refinance      Difference
                 Interest Rate              {:>10,.2f}          {:>10,.2f}       {:>10,.2f}
                 Remaining Term             {:>10}          {:>10}               
@@ -61,15 +67,26 @@ class Mortgage():
                 ===========================================================    ============
                 Total Payments             {:>10,.2f}      {:>14,.2f}       {:>10,.2f}     
                 ===========================================================    ============
-                (Principal Remaining: {:>10,.2f})
-                {}    
-                """.format(self.__faiz, yenifaiz,(yenifaiz-self.__faiz) ,kalanay, kalanay,
-                self.__kalanpara(odenenay)[1],taksit_tutari,(taksit_tutari- self.__kalanpara(odenenay)[1]),
-                geri_odeme1,geri_odeme2, (geri_odeme2-geri_odeme1),self.__kalanpara(odenenay)[0],
-                           "Sorry, refinancing will not save your money" if (
-                            geri_odeme2 - geri_odeme1)>=0 else "Refinancing could save you"))
+                                                                                {:>10,.2f}    
+                                                                               ============
+                                                                                {:>10,.2f}
+                {}
+                
+                -------------------BREAK EVEN POINT------------------------
+                Costs                       : {:>10,.2f}
+                Monthly Savings             : {:>10,.2f}
+                Break Even Point (Months)   : {:>10,.2f}
+                ------------------------------------------------------------
+                  
+                """.format(self.__kalanpara(odenenay)[0],self.__faiz, yenifaiz,(yenifaiz-self.__faiz) ,kalanay, kalanay,
+                self.__kalanpara(odenenay)[1],taksit_tutari,kazanc,
+                geri_odeme1,geri_odeme2, (geri_odeme2-geri_odeme1),self.__masraf,((geri_odeme2-geri_odeme1)+self.__masraf),
+                prompt,self.__masraf,
+                           kazanc,-1*(self.__masraf/ kazanc) if self.__masraf >0 and kazanc <0 else 0))
         else:
             print("             Must be number !! ")
+
+
 
     def __cashflows(self):
         _cashflow=[-(self.__kreditutari-self.__masraf),]
@@ -154,10 +171,10 @@ class Mortgage():
                 numalign="right"
             )
         )
+
     def cashflow(self):
         return self.__cashflows()
-        
-        
+
 def checker(argumnt): 
     num = int(argumnt)
     if num <0: 
@@ -185,15 +202,17 @@ def is_number(amount):
     return is_int(amount) or is_float(amount)
 
 # References:
-# this refinance calculator should only be used to estimate your repayments.It doesn't include taxes or insurance
 # https://exceltable.com/en/analyses-reports/calculation-effective-interest-rate
 # https://www.investopedia.com/personal-finance/apr-apy-bank-hopes-cant-tell-difference/
 #APR = Periodic Rate x Number of Periods in a Year
 #APY = (1 + Periodic Rate)**Number of periods – 1
 
-#a=Mortgage(300000,6,12)
+#a=Mortgage(300000,6,12,6000)
 #a.showsummary()
 #print(a.calc_monthlypayment())
 #a.showrefinance()
 #a.showschedule()
 #a.sendtoexcel()
+#a.cashflow()
+
+
