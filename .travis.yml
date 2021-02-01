@@ -8,7 +8,7 @@ before_install:
   - pip install codecov
 install:
   - pip install -r requirements.txt
-script: pytest --cov=./
+script: pytest
 after_success:
   - export CODECOV_TOKEN='050fdd9f-21b5-491b-b938-437a0096daad'
   - bash <(curl -s https://codecov.io/bash)
