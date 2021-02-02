@@ -1,8 +1,14 @@
 # __amortize__
 ### **Easy-to-use Python Library for Amortization Schedule and Refinance**
-<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/amortize?style=for-the-badge">
-<img alt="PyPI" src="https://img.shields.io/pypi/v/amortize?style=for-the-badge">
-<img alt="Travis (.com) branch" src="https://img.shields.io/travis/com/ahmetserguns/amortize/main?label=Travis%20CI&style=for-the-badge">
+
+<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/amortize?style=flat-square">
+<img alt="PyPI" src="https://img.shields.io/pypi/v/amortize">
+<a href="https://www.codefactor.io/repository/github/ahmetserguns/amortize/overview/main">
+<img src="https://www.codefactor.io/repository/github/ahmetserguns/amortize/badge/main" alt="CodeFactor" /></a>
+<img alt="Travis (.com) branch" src="https://img.shields.io/travis/com/ahmetserguns/amortize/main?logo=Travis">
+<img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/amortize">
+<img src="https://img.shields.io/static/v1?label=status&message=stable&color=<Green>">
+
 
 ### __Inspiration__
 
