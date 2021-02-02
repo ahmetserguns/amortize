@@ -82,4 +82,4 @@ It allows the side-by-side comparison of the existing or refinanced loan.
 
 
 ### __Thank You__
-Thanks for checking out the package! I hope you find it useful.
+Thanks for checking out the package.
