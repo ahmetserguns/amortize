@@ -1,13 +1,15 @@
 # __amortize__
 ### **Easy-to-use Python Library for Amortization Schedule and Refinance**
 
-<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/amortize?style=flat-square">
-<img alt="PyPI" src="https://img.shields.io/pypi/v/amortize">
-<a href="https://www.codefactor.io/repository/github/ahmetserguns/amortize/overview/main">
-<img src="https://www.codefactor.io/repository/github/ahmetserguns/amortize/badge/main" alt="CodeFactor" /></a>
-<img alt="Travis (.com) branch" src="https://img.shields.io/travis/com/ahmetserguns/amortize/main?logo=Travis">
-<img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/amortize">
-<img src="https://img.shields.io/static/v1?label=status&message=stable&color=<Green>">
+<p align=left>
+    <a target="_blank" ><img src="https://img.shields.io/pypi/pyversions/amortize?style=flat-square"></a>
+    <a target="_blank" ><img src="https://img.shields.io/pypi/v/amortize"></a>
+    <a href="https://www.codefactor.io/repository/github/ahmetserguns/amortize/overview/main"></a>
+    <a target="_blank" ><img src="https://www.codefactor.io/repository/github/ahmetserguns/amortize/badge/main" alt="CodeFactor" /></a>
+    <a target="_blank" ><img alt="Travis (.com) branch" src="https://img.shields.io/travis/com/ahmetserguns/amortize/main?logo=Travis"></a>
+    <a target="_blank" ><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/amortize"></a>
+   <a target="_blank" ><img src="https://img.shields.io/static/v1?label=status&message=stable&color=<Green>"></a>
+</p>
 
 
 ### __Inspiration__
