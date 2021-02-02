@@ -5,7 +5,8 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import numpy_financial as npf # for irr calculation
 import pandas as pd     # for export schedule to excel
-import argparse, re
+import argparse
+import re
 
 class Mortgage():
     def __init__(self, kreditutari, faiz, vade, masraf=0):
@@ -189,13 +190,17 @@ def checker_faiz(argumnt):
 
 # CHECK INTERGER, FLOAT, INT
 def is_int(amount):
-    if isinstance(amount, int): return True
-    if re.search(r'^-{,1}[0-9]+$', amount): return True
+    if isinstance(amount, int)
+        return True
+    if re.search(r'^-{,1}[0-9]+$', amount):
+        return True
     return False
 
 def is_float(amount):
-    if isinstance(amount, float): return True
-    if re.search(r'^-{,1}[0-9]+\.{1}[0-9]+$', amount): return True
+    if isinstance(amount, float):
+        return True
+    if re.search(r'^-{,1}[0-9]+\.{1}[0-9]+$', amount):
+        return True
     return False
 
 def is_number(amount):
