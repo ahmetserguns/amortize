@@ -99,7 +99,7 @@ m=Mortgage(300000,6,12,0)
 
     Affordability:
     amortize -a0 -i6 -m360 -f0 -c
-![](https://github.com/ahmetserguns/amortize/raw/main/images/afford.png) 
+![](https://github.com/ahmetserguns/amortize/raw/main/images/affords.png) 
 
 
 
