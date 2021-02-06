@@ -60,7 +60,7 @@ m=Mortgage(300000,6,12,0)
    
 
 ## __CLI__
-    usage: amortize [-h] -a AMOUNT -i INTEREST -m MONTHS -f FEES [-s] [-t] [-r] [-c] [-e] [-info]
+    usage: amortize [-h] -a AMOUNT -i INTEREST -m MONTHS -f FEES [-s] [-t] [-r] [-c] [-e]
 
     Easy-to-use Python Library for Amortization Schedule and Refinance
 
@@ -71,7 +71,6 @@ m=Mortgage(300000,6,12,0)
     -r, --refinance       Refinance
     -c, --afcalc          Affordability calculator
     -e, --excel           Export to excel
-    -info, --info         Brief info about Mortgage
 
     required arguments:
     -a AMOUNT, --amount AMOUNT  Loan amount
@@ -98,7 +97,7 @@ m=Mortgage(300000,6,12,0)
 
 
     Affordability:
-    amortize -a0 -i6 -m360 -f0 -c
+    amortize -a0 -i2.61 -m360 -f0 -c
 ![](https://github.com/ahmetserguns/amortize/raw/main/images/affords.png) 
 
 
