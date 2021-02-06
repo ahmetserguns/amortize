@@ -1,4 +1,4 @@
-# __amortize__
+## __amortize__
 ### **Easy-to-use Python Library for Amortization Schedule and Refinance**
 
 <p align=left>
@@ -11,75 +11,98 @@
    <a target="_blank" ><img src="https://img.shields.io/static/v1?label=status&message=stable&color=<Green>"></a>
 </p>
 
+## __Inspiration__
 
-### __Inspiration__
+ The bank with the lowest rate is not always the best choice. APR is important because the interest rate that gets quoted by the lender, isn't always the interest rate that you will pay. The APR includes interest rate and fees charged by the lender, and lets you compare mortgage offers. __APR, reflects the true cost of borrowing.__ However, the borrower will see this figure after the approval and signing of the contract!
 
-The loan cost rate, contrary to the interest rate, represents the total cost of the loan.
-This is what should be used to repay loans provided by banks. However, the borrower will see this figure after
-the approval and signing of the contract.
+If you want something that is straight to the point, this python library can be a good reference.
 
-This Python library can, according to the credit information entered, detail the prepayment and the subsequent cost 
-of the loan on a monthly and annual, nominal and effective basis, create a payment plan and transfer to excel.
-It allows the side-by-side comparison of the existing or refinanced loan.
+- You can estimate the mortgage amount that works with your budget.
+- See true cost of borrowing.
+- If you wish, you can see a payment breakdown for every single month of the loan duration.
+- It allows the side-by-side comparison of the existing or refinanced loan.
+- The break-even point shows how long it'll take for the savings to outweigh the cost.
+- You can export amortization schedule to excel.
+- It doesn’t show you graphs, pie charts, or amortization charts!
 
 
-### __Installation__
+## __Installation__
+
+Install with `pip` or your favorite PyPi package manager.
+
     pip install amortize
----
-### __Dependencies__
+
+## __Dependencies__
 
 * numpy-financial = 1.0.0
 * tabulate = 0.8.7
 * pandas = "1.2.1
----
 
-### __Usage__
+
+## __Usage__
     
-    Mortgage(amount,interest,months,fees=0)
+    Mortgage(
+        loan amount,
+        annual interest rate,
+        loan period in months,
+        fees)
 
-    >> from amortize.calc import Mortgage    
-    >> m=Mortgage(300000,6,12,6000)
-  
-    >> m.showpayment()          : Monthly Payment
-    >> m.showsummary()          : Summary Table
-    >> m.showschedule()         : Amortization Schedule
-    >> m.showrefinance()        : Refinance Mortgage
-    >> m.sendtoexcel()          : Send Amortization Schedule to Excel
+```python
+from amortize.calc import Mortgage    
+m=Mortgage(300000,6,12,0)
+```
 
-### __CLI__
+    >> m.afford()           : Determine how much house you can afford
+    >> m.summary()          : Repayment summary
+    >> m.table()            : Amortization table
+    >> m.refinance()        : Refinance
+    >> m.excel()            : Send amortization table to excel
+   
 
-    usage: amortize [-h] -a AMOUNT -i INTEREST -m MONTHS -f FEES [-s] [-e] [-r]
+## __CLI__
+    usage: amortize [-h] -a AMOUNT -i INTEREST -m MONTHS -f FEES [-s] [-t] [-r] [-c] [-e] [-info]
 
-    Python Library for Amortization Schedule and Refinance
+    Easy-to-use Python Library for Amortization Schedule and Refinance
 
     optional arguments:
     -h, --help            show this help message and exit
-    -s, --schedule        Show Amortization Schedule
-    -e, --excel           Export to Excel
-    -r, --refinance       Refinance Mortgage
+    -s, --summary         Repayment summary
+    -t, --table           Amortization table
+    -r, --refinance       Refinance
+    -c, --afcalc          Affordability calculator
+    -e, --excel           Export to excel
+    -info, --info         Brief info about Mortgage
 
     required arguments:
-    -a AMOUNT, --amount AMOUNT    Mortgage amount
-    -i INTEREST, --interest INTEREST  Annual Interest Rate
-    -m MONTHS, --months MONTHS    Term in months
-    -f FEES, --fees FEES  Extra Payments
+    -a AMOUNT, --amount AMOUNT  Loan amount
+    -i INTEREST, --interest INTEREST Annual interest rate
+    -m MONTHS, --months MONTHS Loan period in months
+    -f FEES, --fees FEES  Extra payments
+
+
+
+## __Screenshots__
+   
+    Repayment Summary:
+    amortize -a300000 -i6 -m12 -f6000 -s
+![](https://github.com/ahmetserguns/amortize/raw/main/images/summary.png) 
+
+
+    Amortization Table:
+    amortize -a300000 -i6 -m12 -f0 -t
+![](https://github.com/ahmetserguns/amortize/raw/main/images/table.png) 
+
+    Refinance:
+    amortize -a300000 -i6 -m12 -f9000 -r
+![](https://github.com/ahmetserguns/amortize/raw/main/images/refinance.png) 
+
+
+    Affordability:
+    amortize -a0 -i6 -m360 -f0 -c
+![](https://github.com/ahmetserguns/amortize/raw/main/images/afford.png) 
 
 
 
 
----
-### __Screenshots__
-
-    usage: amortize -a 300000 -i 6 -m 12 -f 6000
-
-![](https://github.com/ahmetserguns/amortize/raw/main/images/summary.png)
-    
-    usage: amortize -a 300000 -i 6 -m 12 -f 6000 -s
-![](https://github.com/ahmetserguns/amortize/raw/main/images/schedule.png)
-    
-    usage: amortize -a 300000 -i 6 -m 12 -f 6000 -r
-![](https://github.com/ahmetserguns/amortize/raw/main/images/refinance.png)
-
-
-### __Thank You__
-Thanks for checking out the package.
+## __Thank You__
+Thanks for checking out the package.    
