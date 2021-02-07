@@ -1,59 +1,63 @@
 
-
 from tabulate import tabulate
 import datetime
 from dateutil.relativedelta import relativedelta
-import numpy_financial as npf # for irr calculation
+import numpy_financial as npf
 import pandas as pd     # for export schedule to excel
 import argparse
 import re
 
 class Mortgage():
-    def __init__(self, kreditutari, faiz, vade, masraf=0):
-        self.__kreditutari = kreditutari
-        self.__faiz = faiz
-        self.__vade = vade
-        self.__masraf=masraf
-        # effective interest rate %
-        self.__Yillikefective=(1+self.__IRR())**12-1
+    """
+    loan        : loan amount\n
+    interest    : annual interest rate \n
+    term        : loan period in months \n
+    fees        : ex:  origination fees, closing costs.
+    """
+    def __init__(self, loan, interest, term, fees=0):
+        self.__loan = loan
+        self.__interest = interest
+        self.__term = term
+        self.__fees=fees
+        self.__monint=self.__interest/100/12
+        self.__monpayment=npf.pmt(self.__monint,self.__term,-self.__loan)
+        self.__totalpayment=self.__monpayment*self.__term
+        self.__total_interest = self.__monpayment * self.__term - self.__loan
+        # IRR
+        self.__IRR = npf.irr(self.__cashflows())
+        # APY calculation, fees not included : effective
+        self.__effinterest = (((1 + self.__monint) ** 12) - 1) * 100
+        # APY calculation, fees included : effective
+        self.__annualeffective= (((1 + self.__IRR) ** 12) - 1) * 100
 
-    def __showcalc(self):
+    def __kalanpara(self, kalanay):
+        """ Remaining money ... """
         for ele in self.__calc_amortisman():
-            return ele
+            if ele[1] == kalanay:
+                return ele[5], ele[2]
 
-    def __extractdetails(self):
-        sfaiz=0
-        for ele in self.__calc_amortisman():
-            sfaiz+=ele[4]
-        return sfaiz
+    def refinance(self):
+        """ Show refinance comparison table """
 
-    def __kalanpara(self,kalanay):
-        for ele in self.__calc_amortisman():
-            if ele[1]==kalanay:
-                return ele[5],ele[2]
-
-
-    def showrefinance(self):
-        odenenay=input("            Months Already Paid?      :\t")
-        yenifaiz=input("          Refinance Interest Rate?    :\t")
+        odenenay=input("\t\tMonths Already Paid?        :\t")
+        yenifaiz=input("\t\tRefinance Interest Rate?    :\t")
         if is_int(odenenay) and is_number(yenifaiz):
             odenenay=int(odenenay)
             yenifaiz=float(yenifaiz)
-            if odenenay>=self.__vade or odenenay<0:
-                print("             Invalid Input!!")
+            if odenenay>=self.__term or odenenay<0:
+                print("\t\t\t\tCheck already paid value!!")
             elif yenifaiz<0:
-                print("             Invalid Input!!")
+                print("\t\t\tInterest rate must be > 0!!")
             else:
-                kalanay=int(self.__vade-int(odenenay))
+                kalanay=int(self.__term - int(odenenay))
                 para=self.__kalanpara(odenenay)[0]
                 taksit_tutari=para*yenifaiz/12/100*(1+(yenifaiz/12/100))**kalanay/(((1+(yenifaiz/12/100))**kalanay)-1)
                 geri_odeme1=self.__kalanpara(odenenay)[1]*kalanay
                 geri_odeme2=taksit_tutari*kalanay
                 kazanc=(taksit_tutari - self.__kalanpara(odenenay)[1])
-                prompt= "Sorry, refinancing will not save your money!" if (geri_odeme2 - geri_odeme1+self.__masraf) >=\
+                prompt= "Sorry, refinancing will not save your money!" if (geri_odeme2 - geri_odeme1 + self.__fees) >= \
                                                                           0 \
                                         else "Refinancing could save you"
-
 
                 print("""
                                     REFINANCE CALCULATOR
@@ -79,91 +83,77 @@ class Mortgage():
                 Break Even Point (Months)   : {:>10,.2f}
                 ------------------------------------------------------------
                   
-                """.format(self.__kalanpara(odenenay)[0],self.__faiz, yenifaiz,(yenifaiz-self.__faiz) ,kalanay, kalanay,
-                self.__kalanpara(odenenay)[1],taksit_tutari,kazanc,
-                geri_odeme1,geri_odeme2, (geri_odeme2-geri_odeme1),self.__masraf,((geri_odeme2-geri_odeme1)+self.__masraf),
-                prompt,self.__masraf,
-                           kazanc,-1*(self.__masraf/ kazanc) if self.__masraf >0 and kazanc <0 else 0))
+                """.format(self.__kalanpara(odenenay)[0], self.__interest, yenifaiz, (yenifaiz - self.__interest),
+                           kalanay, kalanay,
+                           self.__kalanpara(odenenay)[1], taksit_tutari, kazanc,
+                           geri_odeme1, geri_odeme2, (geri_odeme2-geri_odeme1), self.__fees,
+                           ((geri_odeme2 - geri_odeme1) + self.__fees),
+                           prompt, self.__fees,
+                           kazanc,-1*(self.__fees / kazanc) if self.__fees > 0 and kazanc < 0 else 0))
         else:
-            print("             Must be number !! ")
-
+            print("\t\t\tMust be a number !! ")
 
 
     def __cashflows(self):
-        _cashflow=[-(self.__kreditutari-self.__masraf),]
-        data=self.__showcalc()[2]
-        for i in range(self.__vade):
-            _cashflow.append(data)
+        """ Create cashflow table for IRR calculation"""
+        _cashflow=[-(self.__loan - self.__fees), ]
+        for i in range(self.__term):
+            _cashflow.append(self.__monpayment)
         return _cashflow
 
-    def __IRR(self):
-        return npf.irr(self.__cashflows())
-
-    def showsummary(self):
-        monthly_payment = self.__showcalc()[2]
-        total_interest = self.__showcalc()[2]*self.__vade-self.__kreditutari
-        total_payment = monthly_payment*self.__vade
-        effinterest=(((1+self.__faiz/12/100)**12)-1)*100
+    def summary(self):
+        """ Mortgage Repayment Summary """
         print("")
-        print('             Monthly Interest Rate        :{:>20,.4f} %'.format(self.__faiz/12))
-        print('             APR                          :{:>20,.4f} %'.format(self.__faiz))
-        print('             APY                          :{:>20.4f} %'.format(effinterest))
+        print("\t\t\tMORTGAGE REPAYMENT SUMMARY")
+        print("")
+        print('             Monthly Interest Rate        :{:>20,.4f} %'.format(self.__interest / 12))
+        print('             APR                          :{:>20,.4f} %'.format(self.__interest))
+        print('             APY                          :{:>20.4f} %'.format(self.__effinterest))
         print("")
         print("             When Extra Payments Included")
-        print('             Monthly Interest Rate        :{:>20.4f} %'.format(self.__IRR()*100))
-        print('             APR                          :{:>20.4f} %'.format(self.__IRR()*100*12))
-        print('             APY                          :{:>20.4f} %'.format(self.__Yillikefective*100))
+        print('             Monthly Interest Rate        :{:>20.4f} %'.format(self.__IRR*100))
+        print('             APR                          :{:>20.4f} %'.format(self.__IRR*100*12))
+        print('             APY                          :{:>20.4f} %'.format(self.__annualeffective))
         print("")
-        print('             Term in Months               :{:>13}'.format(self.__vade) + " Months")
-        print('             Monthly Payments             :{:>20,.2f}'.format(monthly_payment))
+        print('             Term in Months               :{:>13}'.format(self.__term) + " Months")
+        print('             Monthly Payment              :{:>20,.2f}'.format(self.__monpayment))
         print("")
-        print('             Mortgage Amount              :{:>20,.2f}'.format(self.__kreditutari))
-        print('             Total Interest Paid          :{:>20,.2f}'.format(self.__extractdetails()))
+        print('             Mortgage Amount              :{:>20,.2f}'.format(self.__loan))
+        print('             Total Interest Paid          :{:>20,.2f}'.format(self.__total_interest))
         print("                                           ====================")
-        print('             Total Payments               :{:>20,.2f}'.format(total_interest+self.__kreditutari))
-        print('             Extra Payments               :{:>20,.2f}'.format(self.__masraf))
+        print('             Total Payments               :{:>20,.2f}'.format(self.__total_interest + self.__loan))
+        print('             Extra Payments               :{:>20,.2f}'.format(self.__fees))
         print("                                           ====================")
-        print('             All Payments and Fees        :{:>20,.2f}'.format(total_payment+self.__masraf))
+        print('             All Payments and Fees        :{:>20,.2f}'.format(self.__totalpayment + self.__fees))
         print("                                           ====================")
         print("")
 
-
-    def showpayment(self):
-        new_intrate = self.__faiz / 12 / 100
-        a = new_intrate * (1 + new_intrate) ** self.__vade
-        b = ((1 + new_intrate) ** self.__vade) - 1
-        taksit_tutari = self.__kreditutari * (a / b)
-        return taksit_tutari
-
-    def __calc_amortisman(self):  
-        new_intrate = self.__faiz/12/100
-        a=new_intrate*(1+new_intrate)**self.__vade
-        b=((1+new_intrate)**self.__vade)-1
-        taksit_tutari=self.__kreditutari*(a/b)
-        bakiye = self.__kreditutari
+    def __calc_amortisman(self):
+        """ Prepare loan amortization table stuff """
+        principal_remaining = self.__loan
         totalpayment = 0
         say = 1
-        while say <= self.__vade:
-            interest = bakiye * self.__faiz/12/100
-            anapara = taksit_tutari - interest
-            bakiye -= anapara-0.0001
-            totalpayment += interest + anapara
+        while say <= self.__term:
+            interest = principal_remaining * self.__monint
+            principal = self.__monpayment - interest
+            principal_remaining -= principal-0.000001
+            totalpayment += interest + principal
             dates = datetime.date.today() + relativedelta(months=say)
-            yield dates, say, taksit_tutari, anapara, interest, bakiye, \
-                totalpayment if bakiye > 0 \
+            yield dates, say, self.__monpayment, principal, interest, principal_remaining, \
+                totalpayment if principal_remaining > 0 \
                 else 0
             say += 1
             
-    def sendtoexcel(self):
+    def excel(self):
+        """ Send amortization table to excel """
         df=pd.DataFrame([ele for ele in self.__calc_amortisman()],
-        columns =['Payment Date', 'Taksit No', 'Payment','Principal', 'Interest', 'Principal Remaining', 'Total Paid'])
-        df.to_excel(r'.\odemeplani.xlsx', index = False, header=True)     
+        columns =['Payment Date', '#', 'Payment','Principal', 'Interest', 'Principal Remaining', 'Total Paid'])
+        df.to_excel(r'.\schedule.xlsx', index = False, header=True)     
 
-    def showschedule(self):
-        #self.showsummary()
+    def table(self):
+        """ Loan Amortization Table """
         table = [ele for ele in self.__calc_amortisman()]
-        print(
-            tabulate(
+        print(tabulate(
                 table,
                 headers=["Payment\nDate", "\n#", "\nPayment", "\nPrincipal",
                 "\nInterest", "Principal\nRemaining", "Total\nPaid"],
@@ -172,25 +162,62 @@ class Mortgage():
                 numalign="right"
             )
         )
+    def afford(self):
+        """Use this function to determine how much house you can afford."""
+        
+        print("")
+        annual_income = input("\t\t\t Annual Income        :\t")
+        monthly_debts = input("\t\t\t Monthly Debts        :\t")
+        if is_int(annual_income) and is_int(monthly_debts):
+            annual_income,monthly_debts=int(annual_income),int(monthly_debts)
+            if annual_income>0 and monthly_debts>0:
+                monthly_income=annual_income/12*0.36
+                alinabilecek_ev_kalan_para = monthly_income - monthly_debts
+                if monthly_debts<monthly_income:
+                    affhouseprice=npf.pv(self.__monint, self.__term, -alinabilecek_ev_kalan_para)
+                    aff_monthly_payment=npf.pmt(self.__monint,self.__term,-affhouseprice)
+                    print("""
+                                    AFFORDABILITY CALCULATOR
+                         Monthly Income (36%)         :       {:>10,.2f}
+                         Monthly Debts                :       {:>10,.2f}
+                         Loan term (months)           :       {:>10}
+                         -----------------------------------------------
+                         You can afford a house up to :       {:>10,.0f}
+                         with Monthly Payment         :       {:>10,.2f}
+                         -----------------------------------------------
+                         
+                         Note: Having a DTI ratio of 36% is considered ideal.
+                    """.format(monthly_income,monthly_debts,self.__term,affhouseprice, aff_monthly_payment))
+                else:
+                    print("\t\t\tInvalid amount of debt !")
+            else:
+                print("\t\t\tMust be > 0 !")
+        else:
+            print("\t\t\tMust be a number!")
 
-    def cashflow(self):
-        return self.__cashflows()
 
-def checker(argumnt): 
-    num = int(argumnt)
-    if num <0: 
-        raise argparse.ArgumentTypeError('Must be > 0')
-    return num 
 
-def checker_faiz(argumnt):
-    num=float(argumnt)
-    if num==0:
-        raise argparse.ArgumentTypeError("Must be >0 ")
+def checker_1(argument):
+    num = int(argument)
+    if num <=0: 
+        raise argparse.ArgumentTypeError('Must be > 0 !')
     return num
 
-# CHECK INTERGER, FLOAT, INT
+def checker(argument):
+    num = int(argument)
+    if num <0: 
+        raise argparse.ArgumentTypeError('Must be > 0 !')
+    return num 
+
+def checker_interest(argument):
+    num=float(argument)
+    if num<=0:
+        raise argparse.ArgumentTypeError("Must be >0 !")
+    return num
+
+# CHECK INTERGER, FLOAT
 def is_int(amount):
-    if isinstance(amount, int)
+    if isinstance(amount, int):
         return True
     if re.search(r'^-{,1}[0-9]+$', amount):
         return True
@@ -205,19 +232,3 @@ def is_float(amount):
 
 def is_number(amount):
     return is_int(amount) or is_float(amount)
-
-# References:
-# https://exceltable.com/en/analyses-reports/calculation-effective-interest-rate
-# https://www.investopedia.com/personal-finance/apr-apy-bank-hopes-cant-tell-difference/
-#APR = Periodic Rate x Number of Periods in a Year
-#APY = (1 + Periodic Rate)**Number of periods – 1
-
-#a=Mortgage(300000,6,12,6000)
-#a.showsummary()
-#print(a.calc_monthlypayment())
-#a.showrefinance()
-#a.showschedule()
-#a.sendtoexcel()
-#a.cashflow()
-
-
