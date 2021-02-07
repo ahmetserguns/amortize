@@ -1,10 +1,10 @@
 
 def main():
-    from amortize.calc import Mortgage,checker,checker_faiz
+    from amortize.calc import Mortgage,checker,checker_interest,checker_1
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Python Library for Amortization Schedule and Refinance"
+        description="Easy-to-use Python Library for Amortization Schedule and Refinance"
     )
     required = parser.add_argument_group("required arguments")
     required.add_argument(
@@ -13,23 +13,23 @@ def main():
         dest="amount",
         type=checker,
         required=True,
-        help="Mortgage amount",
+        help="Loan amount",
     )
     required.add_argument(
         "-i",
         "--interest",
         dest="interest",
-        type=checker_faiz,
+        type=checker_interest,
         required=True,
-        help="Annual Interest Rate",
+        help="Annual interest rate",
     )
     required.add_argument(
         "-m",
         "--months",
         dest="months",
-        type=checker,
+        type=checker_1,
         required=True,
-        help="Term in months",
+        help="Loan period in months",
     )
     required.add_argument(
         "-f",
@@ -37,23 +37,23 @@ def main():
         dest="fees",
         type=checker,
         required=True,
-        help="Extra Payments",
+        help="Extra payments",
     )
     parser.add_argument(
         "-s",
-        "--schedule",
-        dest="schedule",
+        "--summary",
+        dest="summary",
         default=False,
         action="store_true",
-        help="Show Amortization Schedule",
+        help="Repayment summary",
     )
     parser.add_argument(
-        "-e",
-        "--excel",
-        dest="excel",
+        "-t",
+        "--table",
+        dest="table",
         default=False,
         action="store_true",
-        help="Export to Excel",
+        help="Amortization table",
     )
     parser.add_argument(
         "-r",
@@ -61,23 +61,45 @@ def main():
         dest="refinance",
         default=False,
         action="store_true",
-        help="Refinance Mortgage",
+        help="Refinance",
     )
+    parser.add_argument(
+        "-c",
+        "--afcalc",
+        dest="afcalc",
+        default=False,
+        action="store_true",
+        help="Affordability calculator",
+    )
+    parser.add_argument(
+        "-e",
+        "--excel",
+        dest="excel",
+        default=False,
+        action="store_true",
+        help="Export to excel",
+    )
+
     arguments = parser.parse_args()
 
-    if arguments.schedule:
+    if arguments.table:
         _kr=Mortgage(arguments.amount, arguments.interest, arguments.months, arguments.fees)
-        _kr.showschedule()
+        _kr.table()
+    elif arguments.summary:
+        _kr = Mortgage(arguments.amount, arguments.interest, arguments.months, arguments.fees)
+        _kr.summary()
     elif arguments.excel:
         _kr=Mortgage(arguments.amount, arguments.interest, arguments.months, arguments.fees)
-        _kr.sendtoexcel()
+        _kr.excel()
     elif arguments.refinance:
         _kr =Mortgage(arguments.amount, arguments.interest, arguments.months, arguments.fees)
-        _kr.showrefinance()
-    else:
-        _kr=Mortgage(arguments.amount, arguments.interest, arguments.months, arguments.fees)
-        _kr.showsummary()
-
+        _kr.refinance()
+    elif arguments.afcalc:
+        _kr = Mortgage(arguments.amount, arguments.interest, arguments.months, arguments.fees)
+        _kr.afford()
+    else :
+        _kr = Mortgage(arguments.amount, arguments.interest, arguments.months, arguments.fees)
+        _kr.summary()    
 
 if __name__=="__main__":
     main()
